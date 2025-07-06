@@ -1,11 +1,18 @@
 import { useRef } from "react";
 import { login } from "../../js/storage/storage";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 function Login() {
   const navigate = useNavigate();
   const userEmailRef = useRef();
   const userPasswordRef = useRef();
+
+  const errorAtLogin = () =>
+    toast.error("Email ou senha inválido", {
+      theme: "light",
+      pauseOnHover: false,
+    });
 
   const renderCadastro = () => {
     navigate("/register");
@@ -13,8 +20,6 @@ function Login() {
 
   const loginUser = async (user, password) => {
     if (!user || !password) {
-      //criar resposta na UX para o usuario saber o erro
-      console.error("Campos devem ser preenchidos");
     } else {
       const data = await login(user, password);
       if (data.sucess) {
@@ -48,11 +53,14 @@ function Login() {
           <div className="w-72 h-10 flex justify-center items-center align-middle">
             <button
               className="w-72 h-10 bg-blue-600 mt-2 text-white active:scale-96"
-              onClick={() => {
-                loginUser(
+              onClick={async () => {
+                const loginSucess = await loginUser(
                   userEmailRef.current.value,
                   userPasswordRef.current.value
                 );
+                if (!loginSucess) {
+                  errorAtLogin();
+                }
               }}
             >
               Entrar
@@ -68,6 +76,7 @@ function Login() {
           </span>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

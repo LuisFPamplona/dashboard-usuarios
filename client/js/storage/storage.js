@@ -54,3 +54,14 @@ export const getUsers = async () => {
     return { sucess: false, message: data.message };
   }
 };
+
+export const deleteUser = async (id) => {
+  const res = await fetch(`${URL}/private/delete`, {
+    method: "DELETE",
+    headers: {
+      authorization: `${token}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  });
+};

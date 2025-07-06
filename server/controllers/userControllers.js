@@ -77,3 +77,21 @@ export const registerUser = async (req, res) => {
     res.status(500).json({ message: "Error at register" });
   }
 };
+
+export const deleteUser = async (req, res) => {
+  try {
+    const user = req.body;
+    const id = user.id;
+
+    await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    res.status(200).json({ message: `User deleted` });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Cannot remove user" });
+  }
+};

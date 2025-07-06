@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { cadastro } from "../../js/storage/storage";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 function Cadastro() {
   const navigate = useNavigate();
@@ -12,18 +13,33 @@ function Cadastro() {
     navigate("/");
   };
 
+  const registerDone = () =>
+    toast.success(
+      "Usuário cadastrado com sucesso...Voltando para a tela de login",
+      {
+        autoClose: 3000,
+        pauseOnHover: false,
+      }
+    );
+  const registerError = () =>
+    toast.error("Erro ao cadastrar", {
+      pauseOnHover: false,
+    });
+
   const cadastrarUsuario = async (name, email, password) => {
     if (!name || !email || !password) {
-      console.error("Campos devem ser preenchidos");
+      registerError();
     } else {
       const data = await cadastro(email, name, password);
 
       if (data.sucess) {
-        //criar reposta para o usuario na UX de cadastro bem sucedido
-        navigate("/");
+        registerDone();
+
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
       } else {
-        //criar reposta para o usuario na UX de cadastro mal sucedido
-        console.error("Falha ao cadastar");
+        registerError();
       }
     }
 
@@ -34,6 +50,7 @@ function Cadastro() {
 
   return (
     <>
+      <ToastContainer />
       <div className="m-auto mt-32 m-top w-82 h-76 bg-white">
         <h1 className=" text-4xl text-blue-600 font-bold flex justify-center p-4">
           Cadastre-se
